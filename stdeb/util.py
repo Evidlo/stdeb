@@ -76,6 +76,8 @@ stdeb_cmdline_opts = [
      "deprecated (see --suite)"),
     ('suite=', 'z',
      "distribution name to use if not specified in .cfg (default='unstable')"),
+    ('change-text=', None,
+     'manually set changelog text'),
     ('default-maintainer=', None,
      'deprecated (see --maintainer)'),
     ('maintainer=', 'm',
@@ -1336,6 +1338,7 @@ def build_dsc(debinfo,
               remove_expanded_source_dir=0,
               debian_dir_only=False,
               sign_dsc=False,
+              change_text=None,
               ignore_source_changes=False,
               ):
     """make debian source package"""
@@ -1401,7 +1404,11 @@ def build_dsc(debinfo,
         os.mkdir(debian_dir)
 
     #    A. debian/changelog
-    changelog = CHANGELOG_FILE % debinfo.__dict__
+    if change_text is None:
+        change_text = "source package automatically created by stdeb ({})".format(
+            debinfo.stdeb_version
+        )
+    changelog = CHANGELOG_FILE.format(change_text=change_text, **debinfo.__dict__)
     with codecs.open(os.path.join(debian_dir, 'changelog'),
                      mode='w', encoding='utf-8') as fd:
         fd.write(changelog)
@@ -1581,11 +1588,11 @@ def build_dsc(debinfo,
 CHANGELOG_PY2_DISTNAME = '%(distname)s'
 CHANGELOG_PY3_DISTNAME = '%(distname3)s'
 CHANGELOG_FILE = """\
-%(source)s (%(full_version)s) %(changelog_distname)s; urgency=low
+{source} ({full_version}) {changelog_distname}; urgency=low
 
-  * source package automatically created by stdeb %(stdeb_version)s
+  * {change_text}
 
- -- %(maintainer)s  %(date822)s\n"""
+ -- {maintainer}  {date822}\n"""
 
 CONTROL_FILE = """\
 Source: %(source)s

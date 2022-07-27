@@ -664,6 +664,7 @@ To pass these commands to sdist_dsc when calling bdist_deb, do this::
                                        python-<debianized-setup-name>)
   --suite                              suite (e.g. stable, lucid) in changelog
                                        (Default: unstable)
+  --changelog-text                     manually set changelog text
   --maintainer                         debian/control Maintainer: (Default:
                                        <setup-maintainer-or-author>)
   --debian-version                     debian version (Default: 1)
